@@ -1,0 +1,146 @@
+.content-center{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.model{
+	display: none !important;
+}
+
+.form-content-cart{
+	.content-cart{
+		max-width: 400px;
+		width: 100%;
+		height: auto;
+		display: flex;
+		flex-direction: column;
+
+		border: 1px solid #878787;
+		background-color: #F5F5F5;
+		padding: 2px;
+
+		.cart{
+			display: flex;
+			flex-direction: column;
+
+			hr{
+				width: 100%;
+				border: none;
+				border-bottom: 1px solid #878787;
+			}
+
+			.content-product-list{
+				ul{
+					li{
+						> *{
+							text-align: center;
+							min-width: 50px;
+						}
+
+						.name{
+							white-space: nowrap;
+							overflow: hidden;
+							width: 80px;
+						}
+
+						.amount{
+							display: flex;
+							flex-direction: row;
+							align-items:center;
+							justify-content: center;
+
+							min-width: 100px;
+							width: 100%;
+							max-width: 130px;
+
+							.amount-component{
+								margin-right: 10px;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.content-product-list,
+		.content-coupons-list,
+		.content-invoice{
+			ul{
+				display: flex;
+				flex-direction: column;
+
+				li{
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+					align-items: center;
+					margin: 10px;
+					color: #333;
+				}
+			}
+		}
+
+		.content-coupons-list{
+			.coupon{
+				.name{
+					width: 125px;
+				}
+
+				.coupon-benefits{
+					width: 80px;
+					text-align: right;
+				}
+			}
+		}
+
+		.content-invoice{
+			.total{
+				font-weight: 600;
+			}
+		}
+
+		.coupon-apply{
+			padding: 10px;
+
+			> input,
+			> button{
+				height: 45px;
+			}
+
+			> input{
+				padding: 5px 10px;
+				margin-right: 10px;
+			}
+
+			> button{
+				border: none;
+				background-color: #2c6dff;
+				border-radius: 7px;
+				color: #FFF;
+				padding: 12px 20px;
+			}
+		}
+
+		.coupon-remove{
+			border: 1px solid #666;
+			border-radius: 20px;
+			background-color: #2c6dff;
+			padding: 5px 20px;
+			font-weight: 600;
+			color: #FFF;
+		}
+	}
+
+	.finish{
+		> button{
+			margin-top: 30px;
+			width: 100%;
+			border: none;
+			background-color: #00c854;
+			border-radius: 7px;
+			color: #FFF;
+			padding: 12px 20px;
+		}
+	}
+}

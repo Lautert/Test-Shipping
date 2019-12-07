@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="public/third_party/font-awesome/css/font-awesome.css">
+		<link rel="stylesheet" type="text/css" href="public/css/style-less.css">
+		<title>Guilherme Lautert - Teste</title>
+
+		<script type="text/javascript" src="public/js/jquery-3.4.1.js"></script>
+	</head>
+
+	<body class="content-center">
+
+		<div style="background: url('front-model.png'); position: fixed; top: 104px; left: 190px; width: 372px; height: 600px;"> 
+		</div>
+
+		<form action="javascript:void(0);" class="form-content-cart">
+			<div class="content-cart">
+				<div class="cart">
+					<div class="content-product-list">
+						<ul>
+							<li class="product">
+								<span class="name al-left">Product</span>
+								<span class="amount">Amount</span>
+								<span class="unit">Unit</span>
+								<span class="total al-right">Total</span>
+							</li>
+							<li class="product model">
+								<input type="hidden">
+								<span class="name al-left"></span>
+								<div class="amount">
+									<div class="amount-component">
+										<input class="onlyNumber" type="text" value="0" maxlength="3">
+										<div>
+											<i class="up fa fa-caret-up"></i>
+											<i class="down fa fa-caret-down"></i>
+										</div>
+									</div>
+									kg
+								</div>
+								<span class="unit"></span>
+								<span class="total al-right"></span>
+							</li>
+						</ul>
+					</div>
+					<div class="content-coupons-list">
+						<ul>
+							<li class="coupon model">
+								<input type="hidden"/>
+								<span class="name"></span>
+								<button class="coupon-remove pointer" type="button">Remove</button>
+								<span class="coupon-benefits"></span>
+							</li>
+						</ul>
+					</div>
+					<hr />
+					<div class="content-invoice">
+						<ul>
+							<li class="subtotal">
+								<span>Subtotal</span>
+								<span class="value">$0</span>
+							</li>
+							<li class="shipping">
+								<span>Shipping</span>
+								<span class="value">$0</span>
+							</li>
+							<li class="total">
+								<span>Total</span>
+								<span class="value">$0</span>
+							</li>
+						</ul>
+					</div>
+					<hr />
+					<div class="coupon-apply">
+						<input type="text" placeholder="Coupon Code">
+						<button class="pointer" type="button">Apply</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="finish">
+				<button class="pointer" type="submit">Purchase</button>
+			</div>
+		</form>
+
+		<script type="text/javascript" src="public/js/application.js"></script>
+	</body>
+</html>
