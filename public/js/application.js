@@ -532,22 +532,6 @@ $(document).ready(function() {
             }
         }
     }, {
-        id: 2,
-        name: "FOO",
-        text: "$ 100",
-        benefit: {
-            total: {
-                reduce: {
-                    fixed: 100
-                }
-            }
-        },
-        conditions: [ {
-            total: {
-                min: 101
-            }
-        } ]
-    }, {
         id: 3,
         name: "C",
         text: "Free Shipping",
@@ -562,6 +546,22 @@ $(document).ready(function() {
             subtotal: {
                 min: 300.5,
                 max: 400
+            }
+        } ]
+    }, {
+        id: 2,
+        name: "FOO",
+        text: "$ 100",
+        benefit: {
+            total: {
+                reduce: {
+                    fixed: 100
+                }
+            }
+        },
+        conditions: [ {
+            total: {
+                min: 101
             }
         } ]
     } ];
@@ -636,7 +636,7 @@ $(document).ready(function() {
             _this.products = {};
             _this.coupons = {};
             Coupons.map(function(data) {
-                _this.coupons[data.id] = false;
+                _this.coupons["_" + data.id] = false;
             });
             _this.subtotal = 0;
             _this.shipping = 0;
@@ -669,9 +669,9 @@ $(document).ready(function() {
                         var data = CouponCode.filter((data, key) => data.code == coupon);
                         if (data.length > 0) {
                             var couponId = data[0].id;
-                            if (!_this.coupons[couponId]) {
+                            if (!_this.coupons["_" + couponId]) {
                                 coupon = Coupons.filter((data, key) => data.id == couponId)[0];
-                                _this.coupons[coupon.id] = true;
+                                _this.coupons["_" + couponId] = true;
                                 var curr = _this.elem.couponList.find(".model").clone();
                                 var input = curr.find('input[type="hidden"]');
                                 curr.removeClass("model");
@@ -689,7 +689,7 @@ $(document).ready(function() {
                 _this.elem.couponList.on("click", ".coupon-remove", function() {
                     var currCoupon = $(this).parents(".coupon:eq(0)");
                     var id = currCoupon.find('input[type="hidden"]').val();
-                    _this.coupons[id] = false;
+                    _this.coupons["_" + id] = false;
                     currCoupon.remove();
                     _this.invoice();
                 });
@@ -776,6 +776,7 @@ $(document).ready(function() {
                     }
                 }
                 coupons.map(function(id) {
+                    id = id.replace(/\D/g, "");
                     var coupon = Coupons.filter(data => data.id == id)[0];
                     var elemCoupon = _this.elem.couponList.find('input[type="hidden"][value="' + id + '"]').parents(".coupon:eq(0)");
                     var couponText = coupon.text;
