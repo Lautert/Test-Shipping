@@ -1,3 +1,12 @@
+/public/build
+/public/css/style-less.css
+/public/css/style-sass.css
+/public/js/application.js
+
+/README.md
+/package.json
+/Gruntfile.js
+
 # Logs
 logs
 *.log
