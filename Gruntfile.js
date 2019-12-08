@@ -95,6 +95,10 @@ module.exports = function (grunt) { // jshint ignore:line
 				},
 				files: {
 					'public/js/application.min.js': [
+						'public/build/js/jquery.mask.js',
+
+						'public/build/js/mask.js',
+						'public/build/js/amount.js',
 						'public/build/js/application.js',
 					]
 				}
