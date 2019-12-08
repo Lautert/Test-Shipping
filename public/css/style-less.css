@@ -68,13 +68,17 @@ ul li {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: auto;
 }
 .model {
   display: none !important;
 }
+.form-content-cart {
+  height: auto;
+  padding: 10px 0;
+}
 .form-content-cart .content-cart {
-  max-width: 400px;
-  width: 100%;
+  width: 310px;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -107,10 +111,18 @@ ul li {
   justify-content: center;
   min-width: 100px;
   width: 100%;
-  max-width: 130px;
+  max-width: 110px;
 }
 .form-content-cart .content-cart .cart .content-product-list ul li .amount .amount-component {
   margin-right: 10px;
+}
+.form-content-cart .content-cart .cart .content-product-list ul li .unit {
+  display: none;
+}
+@media only screen and (min-width: 340px) {
+  .form-content-cart .content-cart .cart .content-product-list ul li .unit {
+    display: block;
+  }
 }
 .form-content-cart .content-cart .content-product-list ul,
 .form-content-cart .content-cart .content-coupons-list ul,
@@ -132,14 +144,20 @@ ul li {
   width: 125px;
 }
 .form-content-cart .content-cart .content-coupons-list .coupon .coupon-benefits {
-  width: 80px;
+  min-width: 120px;
   text-align: right;
+}
+.form-content-cart .content-cart .content-coupons-list .coupon .coupon-benefits.error {
+  color: red;
 }
 .form-content-cart .content-cart .content-invoice .total {
   font-weight: 600;
 }
 .form-content-cart .content-cart .coupon-apply {
   padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 .form-content-cart .content-cart .coupon-apply > input,
 .form-content-cart .content-cart .coupon-apply > button {
@@ -148,6 +166,7 @@ ul li {
 .form-content-cart .content-cart .coupon-apply > input {
   padding: 5px 10px;
   margin-right: 10px;
+  width: calc(100% - 80px);
 }
 .form-content-cart .content-cart .coupon-apply > button {
   border: none;
@@ -155,6 +174,7 @@ ul li {
   border-radius: 7px;
   color: #FFF;
   padding: 12px 20px;
+  width: 80px;
 }
 .form-content-cart .content-cart .coupon-remove {
   border: 1px solid #666;
@@ -163,6 +183,22 @@ ul li {
   padding: 5px 20px;
   font-weight: 600;
   color: #FFF;
+}
+.form-content-cart .content-cart .coupon-remove.button {
+  display: none;
+}
+@media only screen and (min-width: 450px) {
+  .form-content-cart .content-cart .coupon-remove.button {
+    display: block;
+  }
+  .form-content-cart .content-cart .coupon-remove.icon {
+    display: none;
+  }
+}
+@media only screen and (min-width: 450px) {
+  .form-content-cart .content-cart {
+    width: 450px;
+  }
 }
 .form-content-cart .finish > button {
   margin-top: 30px;

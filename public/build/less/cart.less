@@ -2,6 +2,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	height: auto;
 }
 
 .model{
@@ -9,9 +10,11 @@
 }
 
 .form-content-cart{
+	height: auto;
+	padding: 10px 0;
+
 	.content-cart{
-		max-width: 400px;
-		width: 100%;
+		width: 310px;
 		height: auto;
 		display: flex;
 		flex-direction: column;
@@ -52,10 +55,24 @@
 
 							min-width: 100px;
 							width: 100%;
-							max-width: 130px;
+							max-width: 110px;
 
 							.amount-component{
 								margin-right: 10px;
+							}
+						}
+
+						.unit{
+							display: none;
+						}
+					}
+				}
+
+				@media only screen and (min-width: 340px){
+					ul{
+						li{
+							.unit{
+								display: block;
 							}
 						}
 					}
@@ -88,8 +105,12 @@
 				}
 
 				.coupon-benefits{
-					width: 80px;
+					min-width: 120px;
 					text-align: right;
+
+					&.error{
+						color:red;
+					}
 				}
 			}
 		}
@@ -102,6 +123,9 @@
 
 		.coupon-apply{
 			padding: 10px;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
 
 			> input,
 			> button{
@@ -111,6 +135,7 @@
 			> input{
 				padding: 5px 10px;
 				margin-right: 10px;
+				width: calc(100% - 80px);
 			}
 
 			> button{
@@ -119,6 +144,7 @@
 				border-radius: 7px;
 				color: #FFF;
 				padding: 12px 20px;
+				width: 80px
 			}
 		}
 
@@ -129,6 +155,23 @@
 			padding: 5px 20px;
 			font-weight: 600;
 			color: #FFF;
+
+			&.button{
+				display: none;
+			}
+
+			@media only screen and (min-width: 450px){
+				&.button{
+					display: block;
+				}
+				&.icon{
+					display: none;
+				}
+			}
+		}
+
+		@media only screen and (min-width: 450px){
+			width: 450px;
 		}
 	}
 

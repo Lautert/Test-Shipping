@@ -25,20 +25,26 @@ $(document).ready(function(){
 		{
 			id: 1,
 			name: 'A',
-			benefit: { subtotal: { reduce: { percentage: 30 } } }
+			text: '(30%)',
+			benefit: { subtotal: { reduce: { percentage: 30 } } },
 		},
 		{
 			id: 2,
 			name: 'FOO',
-			benefit: { total: { reduce: { fixed: 100 } } }
+			text: '$ 100',
+			benefit: { total: { reduce: { fixed: 100 } } },
+			conditions : [
+				{ total: { min: 101 } }
+			]
 		},
 		{
 			id: 3,
 			name: 'C',
+			text: 'Free Shipping',
 			benefit: { shipping: { value: { fixed: 0 } } },
-			conditions : {
-				min: 300.50
-			}
+			conditions : [
+				{ subtotal: { min: 300.50, max: 400 } }
+			]
 		},
 	];
 
@@ -50,26 +56,25 @@ $(document).ready(function(){
 
 	var rules = [
 		{
-			rule: { shipping: { value: { fixed: 0 } } },
-			conditions: [
-				{ total: { min: 400 } }
-			]
-		},
-		{
 			rule: { shipping: { value: { fixed: 30 } } },
 			conditions: [
-				{ kg: { max: 10 } }
+				{ kg: { min: 1 } }
 			]
 		},
 		{
 			rule: { shipping: { addition: { fixed: 7 } } },
 			conditions: [
 				{ kg: { min: 10 } },
-				{ kg: { mult: 5 } },
+				{ kg: { mult: 5, recursive: true } },
+			]
+		},
+		{
+			rule: { shipping: { value: { fixed: 0 } } },
+			conditions: [
+				{ subtotal: { min: 400 } }
 			]
 		},
 	];
-
 
 	var Cart = (function($){
 
@@ -89,6 +94,9 @@ $(document).ready(function(){
 
 			_this.products = {};
 			_this.coupons = {};
+			Coupons.map(function(data){
+				_this.coupons[data.id] = false;
+			});
 
 			_this.subtotal	= 0;
 			_this.shipping	= 0;
@@ -110,7 +118,7 @@ $(document).ready(function(){
 
 					var total = parseFloat(amount * price);
 					if(total > 0){
-						_this.products[id] = total;
+						_this.products[id] = { amount:amount, total:total };
 					}else{
 						delete _this.products[id];
 					}
@@ -125,21 +133,20 @@ $(document).ready(function(){
 						var data = CouponCode.filter((data, key) => data.code == coupon);
 						if(data.length > 0){
 							var couponId = data[0].id;
-							if(Object.keys(_this.coupons).filter((value, key) => value == couponId).length == 0){
+							if(!_this.coupons[couponId]){
 								coupon = Coupons.filter((data, key) => data.id == couponId)[0];
 
 								_this.coupons[coupon.id] = true;
 
 								var curr = _this.elem.couponList.find('.model').clone();
+								var input = curr.find('input[type="hidden"]');
 								curr.removeClass('model');
-								curr.find('input[type="hidden"]').val(coupon.id);
+								input.val(coupon.id);
+								input.attr('name', 'coupon['+couponId+']');
 								curr.find('.name').text('Coupon '+coupon.name);
 
 								_this.elem.couponList.append(curr);
 								_this.invoice();
-							}else{
-								console.log('coupon already used');
-								// CRIAR MODAL COM ERRO DE CUPOM
 							}
 						}else{
 							console.log('coupon not valid');
@@ -151,13 +158,149 @@ $(document).ready(function(){
 				_this.elem.couponList.on('click', '.coupon-remove', function(){
 					var currCoupon = $(this).parents('.coupon:eq(0)');
 					var id = currCoupon.find('input[type="hidden"]').val();
-					delete _this.coupons[id];
+					_this.coupons[id] = false;
 					currCoupon.remove();
 					_this.invoice();
 				});
+
+				_this.elem.cart.on('submit', function(){
+					var data = $(this).serializeArray();
+					console.log(data);
+				});
 			},
 			invoice: function(){
-				console.log('change invoice');
+				var _this = this;
+
+				var invoice = {
+					subtotal: Object.values(_this.products).reduce((total, data) => total + data.total, 0),
+					shipping: 0,
+					amount: Object.values(_this.products).reduce((total, data) => total + data.amount, 0),
+				}
+				invoice.total = invoice.subtotal + invoice.shipping;
+
+				function applyBenefit(values, benefit){
+					var data = benefit;
+					if(data.shipping){
+						if(data.shipping.value){
+							if(data.shipping.value.fixed !== undefined){
+								values.shipping = data.shipping.value.fixed;
+								values.total = values.subtotal + values.shipping;
+							}
+						}
+						if(data.shipping.addition){
+							if(data.shipping.addition.fixed !== undefined){
+								values.shipping += data.shipping.addition.fixed;
+								values.total = values.subtotal + values.shipping;
+							}
+						}
+					}
+					if(data.subtotal){
+						if(data.subtotal.reduce){
+							if(data.subtotal.reduce.percentage !== undefined){
+								values.subtotal = values.subtotal - (values.subtotal * (data.subtotal.reduce.percentage / 100));
+								values.total = values.subtotal + values.shipping;
+							}
+						}
+					}
+					if(data.total){
+						if(data.total.reduce){
+							if(data.total.reduce.fixed !== undefined){
+								values.total = values.total - data.total.reduce.fixed;
+							}
+						}
+					}
+					return values;
+				}
+
+			// { === RULES =====
+				rules.map(function(rule){
+					var steps = [];
+					var recursive = 1;
+					rule.conditions.map(function(data){
+						if(data.kg){
+							if(data.kg.max){
+								steps.push(invoice.amount <= data.kg.max);
+							}
+							if(data.kg.min){
+								steps.push(invoice.amount >= data.kg.min);
+							}
+							if(data.kg.mult){
+								steps.push((invoice.amount / data.kg.mult) > 2);
+							}
+							if(data.kg.recursive){
+								var r = Math.ceil(invoice.amount / data.kg.mult) - 2;
+								recursive = r > 0 ? r : 1;
+							}
+						}else
+						if(data.subtotal){
+							if(data.subtotal.min){
+								steps.push(invoice.subtotal >= data.subtotal.min);
+							}
+						}
+					});
+					if(steps.reduce((bool, value) => bool && value)){
+						for(var i = 0; i < recursive; i++){
+							invoice = applyBenefit(invoice, rule.rule);
+						}
+					}
+				});
+			// } === END RULES =====
+
+			// { === COUPON =====
+				var coupons = [];
+				for(var i in _this.coupons){
+					if(_this.coupons[i]){
+						coupons.push(i);
+					}
+				}
+
+				coupons.map(function(id){
+					var coupon = Coupons.filter((data) => data.id == id)[0];
+					
+					var elemCoupon = _this.elem.couponList.find('input[type="hidden"][value="'+id+'"]').parents('.coupon:eq(0)');
+					var couponText = coupon.text;
+					if(id == 1){
+						var valueReduce = (invoice.subtotal * (coupon.benefit.subtotal.reduce.percentage / 100));
+						couponText = '$ -'+valueReduce+' '+couponText;
+					}
+					elemCoupon.find('.coupon-benefits').text(couponText);
+
+					var steps = [];
+					var recursive = 1;
+
+					if(coupon.conditions){
+						coupon.conditions.map(function(data){
+							if(data.subtotal){
+								if(data.subtotal.min){
+									steps.push(invoice.subtotal >= data.subtotal.min);
+								}
+								if(data.subtotal.max){
+									steps.push(invoice.subtotal < data.subtotal.max);
+								}
+							}
+							if(data.total){
+								if(data.total.min){
+									steps.push(invoice.total >= data.total.min);
+								}
+							}
+						});
+					}else{
+						steps.push(true);
+					}
+					if(steps.reduce((bool, value) => bool && value)){
+						for(var i = 0; i < recursive; i++){
+							invoice = applyBenefit(invoice, coupon.benefit);
+						}
+						elemCoupon.find('.coupon-benefits').removeClass('error');
+					}else{
+						elemCoupon.find('.coupon-benefits').addClass('error');
+					}
+				});
+			// } === END COUPON =====
+
+				_this.elem.subtotal.find('.value').text('$ '+invoice.subtotal);
+				_this.elem.shipping.find('.value').text('$ '+invoice.shipping);
+				_this.elem.total.find('.value').text('$ '+invoice.total);
 			},
 		}
 

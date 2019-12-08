@@ -12,7 +12,8 @@
 
 	<body class="content-center">
 
-		<div style="background: url('front-model.png'); position: fixed; top: 104px; left: 190px; width: 372px; height: 600px;"> 
+		<div style="background: url('front-model.png');
+			position: fixed; top: 104px; left: 190px; width: 372px; height: 600px; display: none;">
 		</div>
 
 		<form action="javascript:void(0);" class="form-content-cart">
@@ -49,7 +50,10 @@
 							<li class="coupon model">
 								<input type="hidden"/>
 								<span class="name"></span>
-								<button class="coupon-remove pointer" type="button">Remove</button>
+								<button class="coupon-remove pointer button" type="button">Remove</button>
+								<button class="coupon-remove pointer icon" type="button">
+									<i class="fa fa-remove"></i>
+								</button>
 								<span class="coupon-benefits"></span>
 							</li>
 						</ul>
